@@ -1,5 +1,8 @@
 package com.leetcode.hot100.twoPointers;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class _42_TrappinRainWater {
     /**
      * 给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
@@ -48,15 +51,65 @@ public class _42_TrappinRainWater {
         return ans;
     }
     //双指针
+    /**
+     * 相向双指针的思路就是左右两个指针就表示着水桶可能的两个边的高度，
+     * 假设现在已经计算出了一部分前缀的最大值，一部分后缀的最大值
+     * 比如假设：  [0,1,0,2,1,0,1,3,2,1,2,1]
+     *                i       j
+     * 假设 左右指针 i， j分别遍历到这个位置，
+     * i 左边的最大高度是 1 ，说明 i 这个位置上的水桶 的左边 最大高度是1，
+     * j 右边的最大高度是 3 ，说明 j 这个位置上的水桶 的右边 最大高度是3，
+     * 那么 i 这个位置上的水桶 左边最大的高度是 1 ，虽然中间还有没有遍历的，但右边已经遍历出的最大高度是3，
+     * 比 i 这个位置上左边最大高度大，说明不会出现水流出的这种情况，就是可以存住水。i这个位置的水量就确定了
+     * 那么之后 i 这个位置就可以右移了 因为 i 这个位置可以存的水就可以确定了，存水量由最低的边决定。
+     *
+     *     j 这个位置上的水桶，左边最大的高度至少为1，右边最大高度是 3 已经遍历了，3比1大，
+     * 而中间还有没有遍历的，不确定是否能围住水，那么 j这个位置的水还不能确定，j 这个指针就不能移动。
+     *
+     * 综上，就是 左右指针，当确定了左右两边中低的一边时，即左边最大高度和右边最大高度中较低值确定，
+     * 该位置的水量就可以确定了，这个指针就可以移动了。
+     * */
     public int trapByTwoPointers(int[] height) {
         int n = height.length;
-        int p1 = 0;
-        int p2 = n - 1;
+        int i = 0;//左指针用来找左边的最大值
+        int j = n - 1;//右指针用来找右边的最大值
+        int preMax = height[i];//存左边的最大值
+        int sufMax = height[j];//右边最大值
         int ans = 0;
-        while(p1 < p2){
-            if(height[p1] < height[p2]) p1++;
-            else p2--;
+        while(i < j){
+            if(preMax <= sufMax){
+                ans += preMax - height[i];
+                i++;
+                preMax = Math.max(preMax, height[i]);
+            }
+            else{
+                ans += sufMax - height[j];
+                j--;
+                sufMax = Math.max(sufMax, height[j]);
+            }
         }
+        return ans;
+    }
+    /**
+     * 单调栈思想，没想明白
+     * */
+    public int trapByStack(int[] height) {
+        int ans = 0;
+        Deque<Integer> st = new ArrayDeque<>();
+        for (int i = 0; i < height.length; i++) {
+            int h = height[i];
+            while (!st.isEmpty() && height[st.peek()] <= h) {
+                int bottomH = height[st.pop()];
+                if (st.isEmpty()) {
+                    break;
+                }
+                int left = st.peek();
+                int dh = Math.min(height[left], height[i]) - bottomH; // 面积的高
+                ans += dh * (i - left - 1);
+            }
+            st.push(i);
+        }
+        return ans;
     }
 
 }
