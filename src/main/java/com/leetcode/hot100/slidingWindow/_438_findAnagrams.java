@@ -66,4 +66,28 @@ public class _438_findAnagrams {
         }
         return ans;
     }
+    //只使用一个数组
+    public List<Integer> findAnagramsBySwV3(String s, String p) {
+        List<Integer> ans = new ArrayList<>();
+        int n = p.length();
+        int [] cnt = new int[26];//用来进行标记
+        for(int i = 0; i < n; ++i) { cnt[p.charAt(i) - 'a']++; }
+        int left = 0;
+
+        for(int right = 0; right < s.length();right++){
+           cnt[s.charAt(right) - 'a']--;//有如下几种情况
+            /**
+             * 如果 s.charAt(right) 这个字母在 p 字符串中存在的话，那么个数就减一了
+             * 如果不存在，那么这个 s.charAt(right) 位置在cnt数组中就为负数了
+             * */
+            if(cnt[p.charAt(right) - 'a'] < 0)//为负数说明 这个字母不存在
+            {//那就缩小窗口
+                cnt[s.charAt(right) - 'a']++;//将这个字母的位置恢复为0
+                cnt[s.charAt(left) - 'a']--;//这里缩小窗口
+                left++;
+            }
+            if(right - left + 1 == n) ans.add(left);
+        }
+        return ans;
+    }
 }
