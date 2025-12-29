@@ -1,7 +1,8 @@
 package com.leetcode.hot100.linkedList;
 
+
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class _146_LRUCache {
     /**
@@ -13,51 +14,90 @@ public class _146_LRUCache {
      * 如果不存在，则向缓存中插入该组 key-value 。如果插入操作导致关键字数量超过 capacity ，则应该 逐出 最久未使用的关键字。
      * 函数 get 和 put 必须以 O(1) 的平均时间复杂度运行。
      * */
-    private int capacity;
-    private int size = 0;
-    private HashMap<Integer, DNode> map = new HashMap<>();
-    private DNode dummy = new DNode(0);
-    private DNode head = null;
-    private DNode tail = null;
+    //LRU Cache 必须同时满足：
+    //HashMap：key → 节点（O(1) 定位）
+    //双向链表：维护“使用顺序”
+    //每次 get / put，都要把节点移动到“最近使用位置”
+    //淘汰的是“最久未使用的节点”（链表头）
+    //节点里必须同时存 key 和 value
+
+    Map<Integer, DNode> cache = new HashMap<>();
+    int capacity;
+    DNode headDummy;
+    DNode tailDummy;//有哨兵节点就可以省去头节点和尾节点的使用了
+
 
     public _146_LRUCache(int capacity) {
         this.capacity = capacity;
-        this.size = 0;
-    }
 
+        //空链表
+        headDummy = new DNode(0,0);
+        tailDummy = new DNode(0,0);
+
+        headDummy.next = tailDummy;
+        tailDummy.prev = headDummy;
+    }
     public int get(int key) {
-        return  map.get(key) == null ?  -1 : map.get(key).val;
+        if(this.capacity < 1 || !cache.containsKey(key)) return -1;
+        DNode node = cache.get(key);
+
+        deleteNode(node);
+        //刚访问的节点就需要将其移动到链表尾
+        updateTail(node);
+
+        return node.val;
     }
 
     public void put(int key, int value) {
-        DNode node = new DNode(value);
-        if(size == 0){
-            dummy.next = node;
-            node.prev = dummy;
-            head = node;
-            tail = head;
-            map.put(key, node);
-            size++;
-        }
-        else if(size < capacity) {
-            tail.next = node;
-            node.prev = tail;
-            tail = node;
-            map.put(key, node);
-            size++;
-        }
-        else {
-            tail.next = node;
-            node.prev = tail;
-            tail = node;
-            map.put(key, node);
+        if(this.capacity < 1 ) return;
 
-            DNode temp = head.next;
-            dummy.next = temp;
-            temp.prev = dummy;
+        DNode curKeyNode = null;
 
-            map.put(head.val, null);
-            head = temp;
+        if(cache.containsKey(key)) {
+            curKeyNode =  cache.get(key);
+
+            deleteNode(curKeyNode);
+
+            curKeyNode.val = value;
+            updateTail(curKeyNode);
+        }
+        else{
+            curKeyNode = new DNode(key, value);
+            if(cache.size() == this.capacity){
+                //需要清理链表头
+                DNode oldHead = headDummy.next;
+                cache.remove(oldHead.key);
+                deleteNode(oldHead);
+
+                //然后就将新节点插入到尾部
+                updateTail(curKeyNode);
+            }
+            else{
+                updateTail(curKeyNode);
+            }
+        }
+        cache.put(curKeyNode.key, curKeyNode);
+    }
+    private void deleteNode(DNode node){
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+    private void updateTail(DNode node){
+        tailDummy.prev.next = node;
+        node.prev = tailDummy.prev;
+
+        node.next = tailDummy;
+        tailDummy.prev = node;
+    }
+    class DNode{
+        int key;
+        int val;
+        DNode next;
+        DNode prev;
+        DNode(int key, int val){
+            this.key = key;this.val = val;
+            this.next = null;this.prev = null;
         }
     }
 }
+
