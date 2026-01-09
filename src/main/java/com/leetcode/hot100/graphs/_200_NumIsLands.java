@@ -1,4 +1,4 @@
-package com.leetcode.hot100.array;
+package com.leetcode.hot100.graphs;
 
 public class _200_NumIsLands {
     /**

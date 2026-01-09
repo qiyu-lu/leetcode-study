@@ -1,4 +1,4 @@
-package com.leetcode.hot100.array;
+package com.leetcode.hot100.graphs;
 
 import java.util.LinkedList;
 import java.util.Queue;
