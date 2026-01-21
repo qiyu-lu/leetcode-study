@@ -72,7 +72,9 @@ public class _295_MedianFinder {
 }
 
 class MedianFinder {
-    private PriorityQueue<Integer> maxHeap =  new PriorityQueue<>();
+    private PriorityQueue<Integer> maxHeap =  new PriorityQueue<>(
+            (a, b) -> b - a
+    );
     private PriorityQueue<Integer> minHeap = new PriorityQueue<>();
 
     public MedianFinder() {
@@ -82,21 +84,27 @@ class MedianFinder {
     public void addNum(int num) {
         if(maxHeap.size() == minHeap.size()){
             //原来是偶数，如果规则设定奇数的话从小顶堆中获取的话就是下面的：
+
+            //先将数添加到大顶堆中，大顶堆的堆顶是前 n/2个最小的数中的最大的，
+            //然后将大顶堆的堆顶放入到小顶堆中，
+            //如果直接放入到小顶堆中不确定这个新加入的数是否是前n/2 个最大的数
             maxHeap.offer(num);
             minHeap.offer(maxHeap.poll());
         }
         else{
-            //原来是奇数,奇数的话小顶堆的多
-            maxHeap.offer(num);
+            //原来是奇数,奇数的话小顶堆的多，大顶堆的少
+            //如果直接将这个数加入大顶堆的话不对，因为这样加入的这个数可能不是前 n/2 个最小的数
+            //因此需要先将这个数加入到小顶堆中，此时小顶堆中的堆顶为前 n/2 个最大的数中最小的，
+            //将这个最小的加入到大顶堆中
+            minHeap.offer(num);
+            maxHeap.offer(minHeap.poll());
         }
     }
 
     public double findMedian() {
-        if(maxHeap.size() == minHeap.size()){
-            return (maxHeap.peek() + minHeap.peek()) / 2.0;
-        }
-        else {
+        if(minHeap.size() > maxHeap.size()){
             return minHeap.peek();
         }
+        return (minHeap.peek() + maxHeap.peek()) / 2.0;
     }
 }
