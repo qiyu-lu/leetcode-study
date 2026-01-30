@@ -18,12 +18,6 @@ public class _70_ClimbStairs {
     //从n-1阶台阶到n阶台阶只有一种方法 那么从1到n-1的每一种走法f(n-1)都可以走一步到达n阶台阶，所以有 f(n-1)种
 
 
-
-    //f(n) = f(n-1)+f(n-2) + f(n-1) 从n-3阶台阶到n阶台阶有三种方法，
-    //n-3到n-2到n-1到n， f(n-1)种
-    //从n-3到n-2到n  f(n-2)
-    //从n-3 到n-1到n  f(n-1)
-
     public int climbStairs(int n) {
 //        return dfs1(n);
         int[] visited = new int[n+1];
