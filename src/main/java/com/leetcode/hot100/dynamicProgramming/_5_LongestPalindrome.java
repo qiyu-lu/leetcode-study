@@ -181,4 +181,80 @@ public class _5_LongestPalindrome {
 
         return jiStr.length() > ouStr.length() ? jiStr : ouStr;
     }
+
+    //dp思路的解法
+    //dp[i][j] 表示 字符串中索引 i...j 这段是否是回文串，就是判断 s[i] 和 s[j] 是否相等，如果相等继续判断
+    //判断 dp[i+1][j-1]是否是回文串，继续这样的逻辑，
+    //边界是当 j-i <= 1 时此时的子串只有1个或者2个字符，判断 s[i] 和 s[j] 是否相等
+    public String longestPalindromeDp(String s) {
+        int n = s.length();
+        if(n < 2) return s;
+
+        boolean[][] dp = new boolean[n][n];
+        int maxLen = 1;//最短的长度就是一个字母
+        int startIndex = 0;
+        //因为dp[i][j] 的判断有一部分需要依赖 dp[i+1][j-1]，那么就是需要根据短的子串判断长的子串，
+        //那么就需要先计算出来短子串的dp
+        for(int len = 1; len <= n; len++){
+            for(int i = 0; i + len - 1 < n; i++){
+                if(s.charAt(i + len - 1) == s.charAt(i)){
+                    if(len - 1 <= 1){
+                        dp[i][i+len-1] = true;
+                        if(len > maxLen){
+                            maxLen = len;
+                            startIndex = i;
+                        }
+                    }
+                    else if(i+1 < n && i+len-1-1 < n && dp[i+1][i+len-1-1]){
+                        dp[i][i+len-1] = true;
+                        if(len > maxLen){
+                            maxLen = len;
+                            startIndex = i;
+                        }
+                    }
+                    else{
+                        dp[i][i+len-1] = false;
+                    }
+                }
+                else{
+                    dp[i][i+len-1] = false;
+                }
+            }
+        }
+        return s.substring(startIndex, startIndex+maxLen);
+    }
+
+    public String longestPalindromeDpV2(String s) {
+        int n = s.length();
+        if(n < 2) return s;
+
+        boolean[][] dp = new boolean[n][n];
+        int maxLen = 1;//最短的长度就是一个字母
+        int startIndex = 0;
+        //因为dp[i][j] 的判断有一部分需要依赖 dp[i+1][j-1]，那么就是需要根据短的子串判断长的子串，
+        //那么就需要先计算出来短子串的dp
+        for(int len = 1; len <= n; len++){
+            for(int i = 0; i + len - 1 < n; i++){
+                if(s.charAt(i + len - 1) != s.charAt(i)){
+                    dp[i][i+len-1] = false;
+                }
+                else{
+                    if(len - 1 <= 1){
+                        dp[i][i+len-1] = true;
+                    }
+                    else if(i+1<n && i+len-1-1 < n && dp[i+1][i+len-1-1]){
+                        dp[i][i+len-1] = true;
+                    }
+                    else{
+                        dp[i][i+len-1] = false;
+                    }
+                }
+                if(dp[i][i+len-1] && len > maxLen){
+                    maxLen = len;
+                    startIndex = i;
+                }
+            }
+        }
+        return s.substring(startIndex, startIndex+maxLen);
+    }
 }
