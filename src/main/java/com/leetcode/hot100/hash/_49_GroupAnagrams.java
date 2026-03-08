@@ -25,7 +25,7 @@ public class _49_GroupAnagrams {
                 map.get(key).add(s);
             }
             else{
-                map.put(key, new ArrayList<>(List.of(s)));
+                map.put(key, new ArrayList<>(Arrays.asList(s)));
             }
         }
         return new ArrayList<>(map.values());
