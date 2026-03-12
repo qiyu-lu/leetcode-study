@@ -1,6 +1,7 @@
 package com.leetcode.hot100.hash;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class _49_GroupAnagrams {
     /**
@@ -27,6 +28,15 @@ public class _49_GroupAnagrams {
             else{
                 map.put(key, new ArrayList<>(Arrays.asList(s)));
             }
+        }
+        return new ArrayList<>(map.values());
+    }
+    public List<List<String>> groupAnagramsNew(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for(String s : strs){
+            char[] arr = s.toCharArray();
+            Arrays.sort(arr);
+            map.computeIfAbsent(new String(arr), k -> new ArrayList<>()).add(s);
         }
         return new ArrayList<>(map.values());
     }
