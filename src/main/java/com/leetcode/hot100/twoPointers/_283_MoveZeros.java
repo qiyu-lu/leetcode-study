@@ -56,4 +56,26 @@ public class _283_MoveZeros {
             }
         }
     }
+    //这个思路是双指针，然后先找到两个指针，然后将非0的数覆盖前面的，覆盖之后然后将后面的置零
+    public void moveZeroes(int[] nums) {
+        int p1 = 0,p2 = 0;
+        int len = nums.length;
+        for(; p1 < len; p1++){
+            if(nums[p1] == 0) break;
+        }
+        for(p2 = p1; p2 < len; p2++){
+            if(nums[p2] != 0) break;
+        }
+
+        while(p2 < len){
+            if(nums[p2] != 0) {
+                nums[p1] = nums[p2];
+                p1++;
+            }
+            p2++;
+        }
+        for(int i = p1; i < len; i++){
+            nums[i] = 0;
+        }
+    }
 }
