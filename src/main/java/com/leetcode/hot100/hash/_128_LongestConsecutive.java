@@ -11,7 +11,7 @@ public class _128_LongestConsecutive {
         HashSet<Integer> set = new HashSet<>();
         for(int i : nums) {set.add(i);}
         int cnt = 0;
-        for(Integer i : set){
+        for(int i : set){
             if(set.contains(i - 1)){//如果包含x-1,则从x-1开始找x, x+1, x+2,..
                 continue;//跳过这个数,不是起点
             }
@@ -31,7 +31,7 @@ public class _128_LongestConsecutive {
         for(int i : nums) {set.add(i);}
         int cnt = 0;
         int m = set.size();
-        for(Integer i : set){
+        for(int i : set){
             if(set.contains(i - 1)){//如果包含x-1,则从x-1开始找x, x+1, x+2,..
                 continue;//跳过这个数,不是起点
             }

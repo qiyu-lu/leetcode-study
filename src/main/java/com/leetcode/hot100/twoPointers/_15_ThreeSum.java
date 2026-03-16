@@ -20,7 +20,7 @@ public class _15_ThreeSum {
             for(int j = i + 1; j < nums.length; ++j){
                 int key = 0 - nums[i] - nums[j];
                 if(set.contains(key)){
-                    List<Integer> temp = new ArrayList<>(List.of(nums[i], nums[j], key));
+                    List<Integer> temp = new ArrayList<>(Arrays.asList(nums[i], nums[j], key));
                     Collections.sort(temp);
                     result.add(temp);
                 }
