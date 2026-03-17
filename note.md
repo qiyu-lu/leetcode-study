@@ -9,3 +9,4 @@
 - [283. 移动零](/problem_notes/twoPointers/_283_MoveZeros.md)
 - [11. 盛最多水的容器](/problem_notes/twoPointers/_11_ContainerWithMostWater.md)
 - [15. 三数之和](/problem_notes/twoPointers/_15_ThreeSum.md)
+- [42. 接雨水](/problem_notes/twoPointers/_42_TrappinRainWater.md)
